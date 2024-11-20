@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class DistanceMatrixAPI {
     private static final String API_KEY = System.getenv("API_KEY");
@@ -23,7 +24,7 @@ public class DistanceMatrixAPI {
                 "Av. Conselheiro Nébias, 300 - Vila Matias, Santos, SP",  // A
                 "Av. Conselheiro Nébias, 589/595, Boqueirão, Santos, SP",  // B
                 "Rua Dr. Carvalho de Mendonça, 140, Vila Mathias, Santos, SP",  // C
-//               "Rua W, 101, Porto Alegre, RS",  // D
+                "Av. Gen. Francisco Glicério, 642, José Menino, Santos, SP",  // D
 //               "Rua V, 202, Curitiba, PR"  // E
         };
 

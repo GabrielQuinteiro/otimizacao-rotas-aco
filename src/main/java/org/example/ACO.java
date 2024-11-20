@@ -24,14 +24,18 @@ class ACO {
 
     // Cria as formigas colocando cada uma em uma cidade
     private void inicializarFormigas() {
-        List<String> listaCidades = new ArrayList<>(grafo.getEnderecos());
-
-        for (int i = 0; i < numFormigas; i++) {
-            String cidadeFormiga = listaCidades.remove((int) (Math.random() * listaCidades.size()));
-            formigas.add(new Formiga(cidadeFormiga));
-            if (listaCidades.isEmpty()) {
-                listaCidades.addAll(grafo.getEnderecos());
-            }
+//        List<String> listaCidades = new ArrayList<>(grafo.getEnderecos());
+//
+//        for (int i = 0; i < numFormigas; i++) {
+//            String cidadeFormiga = listaCidades.remove((int) (Math.random() * listaCidades.size()));
+//            formigas.add(new Formiga(cidadeFormiga));
+//            if (listaCidades.isEmpty()) {
+//                listaCidades.addAll(grafo.getEnderecos());
+//            }
+//        }
+        String pontoPartida = grafo.getEndereco(0);
+        for (int k = 0; k < numFormigas; k++) {
+            formigas.add(new Formiga(pontoPartida));
         }
     }
 
@@ -43,7 +47,6 @@ class ACO {
         visitados.add(verticeCorrente);
 
         while (visitados.size() < grafo.getQtdVertices()) {
-            List<String> vizinhos = grafo.getVizinhos(verticeCorrente);
             String proximoVertice = null;
             double menorCusto = Double.MAX_VALUE;
 
@@ -147,16 +150,12 @@ class ACO {
                             cidadeEscolhida = entry.getKey();
                         }
                     }
-
                     cidadesVisitadas.get(k).add(cidadeEscolhida);
                 }
-                //cidadesVisitadas.get(k).add(grafo.getEndereco(0));
                 formigas.get(k).setSolucao(cidadesVisitadas.get(k), calcularCustoCaminho(cidadesVisitadas.get(k)));
             }
-
             atualizarFeromonios(cidadesVisitadas);
         }
-
         encontrarMelhorSolucao();
     }
 }
