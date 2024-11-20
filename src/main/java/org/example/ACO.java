@@ -71,8 +71,8 @@ class ACO {
         return custoGuloso;
     }
 
-    public double calcularCustoCaminho(List<String> caminho) {
-        double custo = 0;
+    public Long calcularCustoCaminho(List<String> caminho) {
+        Long custo = 0L;
         for (int i = 0; i < caminho.size() - 1; i++) {
             custo+= grafo.getCustoAresta(caminho.get(i), caminho.get(i+1));
         }
@@ -82,6 +82,7 @@ class ACO {
     }
 
     private void atualizarFeromonios(List<List<String>> cidadesVisitadas) {
+        System.out.println("Atualizando feromônios:");
         for (String chaveAresta : grafo.getKeysArestas()) {
             double somatorioFeromonio = 0.0;
             for (int k = 0; k < numFormigas; k++) {
@@ -97,12 +98,13 @@ class ACO {
             String destino = vertices[1];
             double novoFeromonio = (1.0 - taxaEvaporacao) * grafo.getFeromonioAresta(origem, destino) + somatorioFeromonio;
             grafo.setFeromonioAresta(origem, destino, novoFeromonio);
+            System.out.println("  Aresta de " + origem + " para " + destino + " tem novo feromônio: " + novoFeromonio);
         }
     }
 
     private void encontrarMelhorSolucao() {
         List<String> melhorSolucao = null;
-        double melhorCusto = Double.MAX_VALUE;
+        Long melhorCusto = Long.MAX_VALUE;
         for (Formiga formiga : formigas) {
             if (formiga.getCustoSolucao() < melhorCusto) {
                 melhorCusto = formiga.getCustoSolucao();
@@ -114,6 +116,7 @@ class ACO {
 
     public void rodar() {
         for (int ep = 0; ep < epochs; ep++) {
+            System.out.println("Iniciando epoch " + (ep + 1) + " de " + epochs);
             List<List<String>> cidadesVisitadas = new ArrayList<>();
             for (Formiga formiga : formigas) {
                 List<String> cidades = new ArrayList<>();
@@ -122,7 +125,9 @@ class ACO {
             }
 
             for (int k = 0; k < numFormigas; k++) {
+                System.out.println("  Formiga " + (k + 1) + " começando a construir solução");
                 for (int i = 1; i < grafo.getQtdVertices(); i++) {
+                    System.out.println("    Visitando cidade " + (i + 1));
                     List<String> cidadesNaoVisitadas = new ArrayList<>(grafo.getVizinhos(formigas.get(k).getCidade()));
                     cidadesNaoVisitadas.removeAll(cidadesVisitadas.get(k));
 
@@ -153,6 +158,7 @@ class ACO {
                     cidadesVisitadas.get(k).add(cidadeEscolhida);
                 }
                 formigas.get(k).setSolucao(cidadesVisitadas.get(k), calcularCustoCaminho(cidadesVisitadas.get(k)));
+                System.out.println("  Formiga " + (k + 1) + " completou a solução com custo: " + formigas.get(k).getCustoSolucao());
             }
             atualizarFeromonios(cidadesVisitadas);
         }
