@@ -53,7 +53,7 @@ public class Grafo {
         vizinhos.get(origem).add(destino);
     }
 
-    public double getCustoAresta(String origem, String destino) {
+    public Long getCustoAresta(String origem, String destino) {
         return arestas.get(origem + "-" + destino).getCusto();
     }
 

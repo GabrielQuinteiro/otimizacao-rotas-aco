@@ -6,7 +6,7 @@ import java.util.List;
 public class Formiga {
     private final String cidade;
     private List<String> solucao;
-    private Double custo;
+    private Long custo;
 
     public Formiga(String cidade) {
         this.cidade = cidade;
@@ -22,14 +22,14 @@ public class Formiga {
         return solucao;
     }
 
-    public void setSolucao(List<String> solucao, double custo) {
+    public void setSolucao(List<String> solucao, Long custo) {
         if (this.custo == null || custo < this.custo) {
             this.solucao = new ArrayList<>(solucao);
             this.custo = custo;
         }
     }
 
-    public Double getCustoSolucao() {
+    public Long getCustoSolucao() {
         return custo;
     }
 }
