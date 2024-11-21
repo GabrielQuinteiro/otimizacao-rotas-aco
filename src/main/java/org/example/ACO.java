@@ -102,7 +102,7 @@ class ACO {
                 melhorSolucao = formiga.getSolucao();
             }
         }
-        System.out.println("Solução final: " + melhorSolucao + " | custo: " + melhorCusto);
+        System.out.println("Solução final: " + String.join(" -> ", melhorSolucao)  + " | custo: " + melhorCusto);
     }
 
     public void rodar() {
