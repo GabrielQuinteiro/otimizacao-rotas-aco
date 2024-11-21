@@ -3,6 +3,7 @@ package org.example;
 import com.google.gson.Gson;
 import spark.Spark;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Main {
@@ -36,22 +37,27 @@ public class Main {
             response.type("application/json");
 
             String[] enderecos = gson.fromJson(request.body(), String[].class);
+            System.out.println(Arrays.toString(enderecos));
 
-            Long[][] matrizDistancias = DistanceMatrixAPI.getDistanceMatrix(enderecos);
+            ResultadoACO resultadoACO = DistanceMatrixAPI.getDistanceMatrixAPI(enderecos);
+
+            Long[][] matrizDistancias = resultadoACO.getMatrizDistancias();
+
+            System.out.println(matrizDistancias);
 
             Grafo grafo = new Grafo(matrizDistancias.length);
             grafo.inicializaComMatriz(matrizDistancias, List.of(enderecos));
-
-            System.out.println("Endereco do vértice 0: " + grafo.getEndereco(0));
-            System.out.println("Custo entre Endereço A e endereço B: " + grafo.getCustoAresta("Av. Conselheiro Nébias, 300, Vila Matias, Santos, SP", "Av. Conselheiro Nébias, 589, Boqueirão, Santos, SP"));
 
             ACO aco = new ACO(grafo);
 
             aco.rodar();
 
-            String melhorSolucao = aco.getMelhorSolucao();
-
-            return gson.toJson(melhorSolucao);
+            if (resultadoACO != null) {
+                return gson.toJson(resultadoACO);
+            } else {
+                response.status(500);
+                return gson.toJson("Erro ao calcular a solução.");
+            }
         });
     }
 
