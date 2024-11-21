@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Long[][] matrizDistancias = {
+        /* Long[][] matrizDistancias = {
                 // A   B   C   D   E   F   G   H   I   J
                 {0L, 1L, 2L, 2L, 4L, 4L, 1L, 2L, 2L, 4L}, // A
                 {1L, 0L, 1L, 2L, 4L, 4L, 1L, 2L, 2L, 4L}, // B
@@ -16,15 +16,21 @@ public class Main {
                 {2L, 2L, 2L, 2L, 2L, 2L, 1L, 0L, 2L, 2L}, // H
                 {2L, 2L, 2L, 2L, 2L, 2L, 1L, 2L, 0L, 2L}, // I
                 {4L, 4L, 3L, 2L, 4L, 4L, 1L, 2L, 2L, 0L}  // J
+        }; */
+        String[] enderecos = {
+                "Av. Conselheiro Nébias, 300, Vila Matias, Santos, SP",  // A
+                "Av. Conselheiro Nébias, 589, Boqueirão, Santos, SP",  // B
+                "Rua Dr. Carvalho de Mendonça, 140, Vila Mathias, Santos, SP",  // C
+                "Av. Gen. Francisco Glicério, 642, José Menino, Santos, SP",  // D
         };
 
-        List<String> enderecos = List.of("Endereço A", "Endereço B", "Endereço C", "Endereço D", "Endereço E", "Endereço F", "Endereço G", "Endereço H", "Endereço I", "Endereço J");
+        Long[][] matrizDistancias = DistanceMatrixAPI.getDistanceMatrix(enderecos);
 
         Grafo grafo = new Grafo(matrizDistancias.length);
-        grafo.inicializaComMatriz(matrizDistancias, enderecos);
+        grafo.inicializaComMatriz(matrizDistancias, List.of(enderecos));
 
         System.out.println("Endereco do vértice 0: " + grafo.getEndereco(0));
-        System.out.println("Custo entre Endereço A e endereço B: " + grafo.getCustoAresta("Endereço A","Endereço B"));
+        System.out.println("Custo entre Endereço A e endereço B: " + grafo.getCustoAresta("Av. Conselheiro Nébias, 300, Vila Matias, Santos, SP","Av. Conselheiro Nébias, 589, Boqueirão, Santos, SP"));
 
         ACO aco = new ACO(grafo);
 
