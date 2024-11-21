@@ -10,6 +10,8 @@ class ACO {
     private final int epochs = 3;
     private final double taxaEvaporacao = 0.5; // rho
     private final List<Formiga> formigas;
+    private List<String> melhorSolucao;
+    private Long melhorCusto = Long.MAX_VALUE;
 
     public ACO(Grafo grafo) {
         this.grafo = grafo;
@@ -94,8 +96,6 @@ class ACO {
     }
 
     private void encontrarMelhorSolucao() {
-        List<String> melhorSolucao = null;
-        Long melhorCusto = Long.MAX_VALUE;
         for (Formiga formiga : formigas) {
             if (formiga.getCustoSolucao() < melhorCusto) {
                 melhorCusto = formiga.getCustoSolucao();
@@ -103,6 +103,10 @@ class ACO {
             }
         }
         System.out.println("Solução final: " + String.join(" -> ", melhorSolucao)  + " | custo: " + melhorCusto);
+    }
+
+    public String getMelhorSolucao() {
+        return String.join(" -> ", melhorSolucao) + " | custo: " + melhorCusto;
     }
 
     public void rodar() {
