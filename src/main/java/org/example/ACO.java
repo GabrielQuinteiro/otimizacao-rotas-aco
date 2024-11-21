@@ -22,17 +22,8 @@ class ACO {
         grafo.inicializarFeromonio(custoGuloso);
     }
 
-    // Cria as formigas colocando cada uma em uma cidade
+    //  Cria as formigas colocando no mesmo ponto de partida
     private void inicializarFormigas() {
-//        List<String> listaCidades = new ArrayList<>(grafo.getEnderecos());
-//
-//        for (int i = 0; i < numFormigas; i++) {
-//            String cidadeFormiga = listaCidades.remove((int) (Math.random() * listaCidades.size()));
-//            formigas.add(new Formiga(cidadeFormiga));
-//            if (listaCidades.isEmpty()) {
-//                listaCidades.addAll(grafo.getEnderecos());
-//            }
-//        }
         String pontoPartida = grafo.getEndereco(0);
         for (int k = 0; k < numFormigas; k++) {
             formigas.add(new Formiga(pontoPartida));
@@ -120,7 +111,8 @@ class ACO {
             List<List<String>> cidadesVisitadas = new ArrayList<>();
             for (Formiga formiga : formigas) {
                 List<String> cidades = new ArrayList<>();
-                cidades.add(formiga.getCidade());
+                String pontoPartida = grafo.getEndereco(0);
+                cidades.add(pontoPartida);
                 cidadesVisitadas.add(cidades);
             }
 
@@ -147,15 +139,20 @@ class ACO {
                         probabilidades.put(cidade, probabilidade);
                     }
 
-                    double maxProbabilidade = -1;
+                    // roleta probabilidades
+                    double random = Math.random();
+                    double acumulado = 0.0;
                     String cidadeEscolhida = null;
                     for (Map.Entry<String, Double> entry : probabilidades.entrySet()) {
-                        if (entry.getValue() > maxProbabilidade) {
-                            maxProbabilidade = entry.getValue();
+                        acumulado += entry.getValue();
+                        if (random <= acumulado) {
                             cidadeEscolhida = entry.getKey();
+                            break;
                         }
                     }
-                    cidadesVisitadas.get(k).add(cidadeEscolhida);
+                    if (cidadeEscolhida != null) {
+                        cidadesVisitadas.get(k).add(cidadeEscolhida);
+                    }
                 }
                 formigas.get(k).setSolucao(cidadesVisitadas.get(k), calcularCustoCaminho(cidadesVisitadas.get(k)));
                 System.out.println("  Formiga " + (k + 1) + " completou a solução com custo: " + formigas.get(k).getCustoSolucao());
