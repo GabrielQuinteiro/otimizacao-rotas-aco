@@ -106,8 +106,14 @@ class ACO {
     }
 
     public void rodar() {
-        for (int ep = 0; ep < epochs; ep++) {
-            System.out.println("Iniciando epoch " + (ep + 1) + " de " + epochs);
+        int maxIteracoes = 100;
+        int maxSemMelhoria = maxIteracoes / 3; // numero máximo iterações sem melhoria, definido como 1/3 de maxIteracoes
+        int iteracoesSemMelhoria = 0;
+        Long melhorCustoGlobal = Long.MAX_VALUE;
+        int epochs = 0;
+
+        while (epochs < maxIteracoes && iteracoesSemMelhoria < maxSemMelhoria) {
+            System.out.println("Iniciando epoch " + (epochs + 1) + " de " + epochs);
             List<List<String>> cidadesVisitadas = new ArrayList<>();
             for (Formiga formiga : formigas) {
                 List<String> cidades = new ArrayList<>();
@@ -158,6 +164,25 @@ class ACO {
                 System.out.println("  Formiga " + (k + 1) + " completou a solução com custo: " + formigas.get(k).getCustoSolucao());
             }
             atualizarFeromonios(cidadesVisitadas);
+            // verifica se houve melhoria na melhor solução
+            Long melhorCustoIteracao = formigas.stream()
+                    .map(Formiga::getCustoSolucao)
+                    .min(Long::compare)
+                    .orElse(Long.MAX_VALUE);
+
+            if (melhorCustoIteracao < melhorCustoGlobal) {
+                melhorCustoGlobal = melhorCustoIteracao;
+                iteracoesSemMelhoria = 0; // Zera o contador se houver melhoria
+            } else {
+                iteracoesSemMelhoria++;
+            }
+
+            if (iteracoesSemMelhoria >= maxSemMelhoria) {
+                System.out.println("Nenhuma melhoria na solução por " + maxSemMelhoria + " iterações consecutivas. Parando...");
+                break;
+            }
+
+            epochs++;
         }
         encontrarMelhorSolucao();
     }
