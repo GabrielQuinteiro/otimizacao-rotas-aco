@@ -7,7 +7,6 @@ class ACO {
     private final int numFormigas;
     private final double alfa = 0.5; // influencia feromonio
     private final double beta = 0.5; // influencia distancia
-    private final int epochs = 3;
     private final double taxaEvaporacao = 0.5; // rho
     private final List<Formiga> formigas;
     private List<String> melhorSolucao;
@@ -105,8 +104,8 @@ class ACO {
         System.out.println("Solução final: " + String.join(" -> ", melhorSolucao)  + " | custo: " + melhorCusto);
     }
 
-    public String getMelhorSolucao() {
-        return String.join(" -> ", melhorSolucao) + " | custo: " + melhorCusto;
+    public List<String> getMelhorSolucao() {
+        return melhorSolucao;
     }
 
     public void rodar() {
