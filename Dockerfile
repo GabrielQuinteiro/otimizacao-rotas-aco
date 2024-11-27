@@ -11,4 +11,4 @@ COPY deploy/otimizacao-rotas-aco-1.0-SNAPSHOT.jar /app/otimizacao-rotas.jar
 EXPOSE 4567
 
 # Definir o comando de inicialização do seu backend
-CMD ["java", "-jar", "otimizacao-rotas-aco-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "otimizacao-rotas.jar"]
