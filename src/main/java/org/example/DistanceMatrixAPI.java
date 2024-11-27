@@ -20,8 +20,6 @@ public class DistanceMatrixAPI {
             throw new IllegalStateException("API_KEY não configurada no ambiente");
         }
 
-        // AIzaSyAZivE8czymKF9VH7CWYkUFQvc-xyl0HuE
-
         int size = enderecos.length;
         DistanciaInfo[][] distanciaInfos = new DistanciaInfo[size][size];
         Long[][] matrizDistancias = new Long[size][size];
