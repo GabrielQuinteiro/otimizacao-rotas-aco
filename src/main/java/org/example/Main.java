@@ -3,32 +3,12 @@ package org.example;
 import com.google.gson.Gson;
 import spark.Spark;
 
-import java.util.Arrays;
+import java.util.*;
+
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        /* Long[][] matrizDistancias = {
-                // A   B   C   D   E   F   G   H   I   J
-                {0L, 1L, 2L, 2L, 4L, 4L, 1L, 2L, 2L, 4L}, // A
-                {1L, 0L, 1L, 2L, 4L, 4L, 1L, 2L, 2L, 4L}, // B
-                {2L, 1L, 0L, 2L, 3L, 3L, 1L, 2L, 2L, 3L}, // C
-                {2L, 2L, 2L, 0L, 2L, 2L, 1L, 2L, 2L, 2L}, // D
-                {4L, 4L, 3L, 2L, 0L, 4L, 1L, 2L, 2L, 4L}, // E
-                {4L, 4L, 3L, 2L, 4L, 0L, 1L, 2L, 2L, 4L}, // F
-                {1L, 1L, 1L, 1L, 1L, 1L, 0L, 1L, 1L, 1L}, // G
-                {2L, 2L, 2L, 2L, 2L, 2L, 1L, 0L, 2L, 2L}, // H
-                {2L, 2L, 2L, 2L, 2L, 2L, 1L, 2L, 0L, 2L}, // I
-                {4L, 4L, 3L, 2L, 4L, 4L, 1L, 2L, 2L, 0L}  // J
-        }; */
-
-        /* String[] enderecos = {
-                "Av. Conselheiro Nébias, 300, Vila Matias, Santos, SP",  // A
-                "Av. Conselheiro Nébias, 589, Boqueirão, Santos, SP",  // B
-                "Rua Dr. Carvalho de Mendonça, 140, Vila Mathias, Santos, SP",  // C
-                "Av. Gen. Francisco Glicério, 642, José Menino, Santos, SP",  // D
-        }; */
-
         Gson gson = new Gson();
 
         Spark.port(4567);
@@ -37,28 +17,70 @@ public class Main {
             response.type("application/json");
 
             String[] enderecos = gson.fromJson(request.body(), String[].class);
-            System.out.println(Arrays.toString(enderecos));
 
-            ResultadoACO resultadoACO = DistanceMatrixAPI.getDistanceMatrixAPI(enderecos);
+            DistanceMatrixResult distanceMatrixResult = DistanceMatrixAPI.getDistanceMatrix(enderecos);
 
-            Long[][] matrizDistancias = resultadoACO.getMatrizDistancias();
+            Long[][] matrizDistancias = distanceMatrixResult.matrizDistancias;
+            DistanciaInfo[][] distanciaInfos = distanceMatrixResult.distanciaInfos;
 
-            System.out.println(matrizDistancias);
+            System.out.println(Arrays.deepToString(matrizDistancias));
 
             Grafo grafo = new Grafo(matrizDistancias.length);
             grafo.inicializaComMatriz(matrizDistancias, List.of(enderecos));
 
             ACO aco = new ACO(grafo);
-
             aco.rodar();
+            List<String> melhorSolucao = aco.getMelhorSolucao();
 
-            if (resultadoACO != null) {
-                return gson.toJson(resultadoACO);
-            } else {
-                response.status(500);
-                return gson.toJson("Erro ao calcular a solução.");
+            // cria o mapa de endereços pra indices
+            Map<String, Integer> addressToIndex = new HashMap<>();
+            for (int i = 0; i < enderecos.length; i++) {
+                addressToIndex.put(enderecos[i], i);
             }
+
+            // cria a resposta do json
+            RouteResponse routeResponse = new RouteResponse();
+            routeResponse.enderecos = new ArrayList<>();
+
+            long totalDistance = 0;
+            long totalTime = 0;
+
+            for (int i = 0; i < melhorSolucao.size(); i++) {
+                String enderecoAtual = melhorSolucao.get(i);
+                String proxEndereco = melhorSolucao.get((i + 1) % melhorSolucao.size()); // assume que endereco final é o endereco inicial
+
+                Integer indiceAtual = addressToIndex.get(enderecoAtual);
+                Integer proxIndice = addressToIndex.get(proxEndereco);
+
+                if (indiceAtual == null || proxIndice == null) {
+                    System.err.println("Endereco não encontrado no mapeamento: " + enderecoAtual + " ou " + proxEndereco);
+                    continue;
+                }
+
+                DistanciaInfo info = distanciaInfos[indiceAtual][proxIndice];
+
+                if (info != null) {
+                    EnderecoInfo enderecoInfo = new EnderecoInfo();
+                    enderecoInfo.address = enderecoAtual;
+                    enderecoInfo.isStarting = (i == 0);
+                    enderecoInfo.distanceToNextPoint = info.distanceInMeters;
+                    enderecoInfo.timeInSeconds = info.durationInTrafficInSeconds;
+                    enderecoInfo.distanceHumanReadable = info.distanceHumanReadable;
+                    enderecoInfo.timeHumanReadable = info.timeHumanReadable;
+
+                    routeResponse.enderecos.add(enderecoInfo);
+
+                    totalDistance += info.distanceInMeters;
+                    totalTime += info.durationInTrafficInSeconds;
+                } else {
+                    System.err.println("DistanceInfo é null para os indices: " + indiceAtual + ", " + proxIndice);
+                }
+            }
+
+            routeResponse.totalDistance = totalDistance;
+            routeResponse.totalTime = totalTime;
+
+            return gson.toJson(routeResponse);
         });
     }
-
 }
