@@ -79,8 +79,33 @@ public class Main {
 
             routeResponse.totalDistance = totalDistance;
             routeResponse.totalTime = totalTime;
+            routeResponse.totalDistanceHumanReadable = formatarDistancia(totalDistance);
+            routeResponse.totalTimeHumanReadable = formatarDuracao(totalTime);
 
             return gson.toJson(routeResponse);
         });
     }
+
+    public static String formatarDuracao(long durationInSeconds) {
+        long hours = durationInSeconds / 3600;
+        long minutes = (durationInSeconds % 3600) / 60;
+
+        if (hours > 0) {
+            return String.format("%d h %d mins", hours, minutes);
+        } else if (minutes > 0) {
+            return String.format("%d mins", minutes);
+        } else {
+            return String.format("%d secs", durationInSeconds);
+        }
+    }
+
+    public static String formatarDistancia(long distanceInMeters) {
+        if (distanceInMeters >= 1000) {
+            double distanceInKm = distanceInMeters / 1000.0;
+            return String.format(Locale.US, "%.1f km", distanceInKm);
+        } else {
+            return String.format("%d m", distanceInMeters);
+        }
+    }
 }
+
