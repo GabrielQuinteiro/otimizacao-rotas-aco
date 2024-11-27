@@ -5,7 +5,7 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 # Copiar o arquivo JAR para o contêiner
-COPY target/otimizacao-rotas-aco-1.0-SNAPSHOT.jar /app/otimizacao-rotas-aco-1.0-SNAPSHOT.jar
+COPY deploy/otimizacao-rotas-aco-1.0-SNAPSHOT.jar /app/otimizacao-rotas.jar
 
 # Expor a porta usada pelo seu backend
 EXPOSE 4567
