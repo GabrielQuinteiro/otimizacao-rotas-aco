@@ -11,7 +11,9 @@ public class Main {
     public static void main(String[] args) {
         Gson gson = new Gson();
 
-        Spark.port(4567);
+        String portEnv = System.getenv("PORT");
+        int port = Integer.parseInt(portEnv);
+        Spark.port(port);
 
         Spark.post("/run-aco", (request, response) -> {
             response.type("application/json");
