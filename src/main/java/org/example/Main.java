@@ -16,13 +16,11 @@ public class Main {
         Spark.post("/run-aco", (request, response) -> {
             response.type("application/json");
 
+            System.out.println("Iniciando o processamento do ACO");
+
             // parse json
             RequestData requestData = gson.fromJson(request.body(), RequestData.class);
-
-            if (requestData == null || requestData.enderecos == null || requestData.alfa == null || requestData.beta == null) {
-                response.status(400);
-                return gson.toJson(Collections.singletonMap("error", "Invalid input format."));
-            }
+            System.out.println("Dados recebidos: " + gson.toJson(requestData));
 
             String[] enderecos = requestData.enderecos;
             Double alfa = requestData.alfa;
