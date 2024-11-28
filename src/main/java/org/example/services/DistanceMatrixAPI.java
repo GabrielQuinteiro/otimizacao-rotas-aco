@@ -51,6 +51,7 @@ public class DistanceMatrixAPI {
                         OutputLocation info = new OutputLocation();
                         info.setDistanceToNextPoint(element.distance.inMeters);
                         info.setTimeInSeconds(element.duration.inSeconds);
+                        info.setDurationInTrafficInSeconds(element.durationInTraffic.inSeconds);
                         info.setDistanceHumanReadable(element.distance.humanReadable);
                         info.setTimeHumanReadable(element.durationInTraffic.humanReadable);
                         outputLocations[i][j] = info;
