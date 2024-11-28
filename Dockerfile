@@ -1,14 +1,15 @@
-# Usar uma imagem base com Java instalado
-FROM openjdk:17-slim
+FROM ubuntu:latest AS build
 
-# Definir o diretório de trabalho dentro do contêiner
-WORKDIR /app
+RUN apt-get update
+RUN apt-get install openjdk-17-jdk -y
+COPY . .
 
-# Copiar o arquivo JAR para o contêiner
-COPY deploy/otimizacao-rotas-aco-1.0-SNAPSHOT.jar /app/otimizacao-rotas.jar
+RUN apt-get install maven -y
+RUN mvn clean install
 
-# Expor a porta usada pelo seu backend
-EXPOSE 4567
+FROM openjdk:17-jdk-slim
+EXPOSE 8080
 
-# Definir o comando de inicialização do seu backend
-CMD ["java", "-jar", "otimizacao-rotas.jar"]
+COPY --from=build /target/otimizacao-rotas-aco-1.0.0.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
