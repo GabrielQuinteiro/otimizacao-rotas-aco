@@ -19,9 +19,14 @@ public class Main {
             // parse json
             RequestData requestData = gson.fromJson(request.body(), RequestData.class);
 
+            if (requestData == null || requestData.enderecos == null || requestData.alfa == null || requestData.beta == null) {
+                response.status(400);
+                return gson.toJson(Collections.singletonMap("error", "Invalid input format."));
+            }
+
             String[] enderecos = requestData.enderecos;
-            double alfa = requestData.alfa;
-            double beta = requestData.beta;
+            Double alfa = requestData.alfa;
+            Double beta = requestData.beta;
 
             DistanceMatrixResult distanceMatrixResult = DistanceMatrixAPI.getDistanceMatrix(enderecos);
 
