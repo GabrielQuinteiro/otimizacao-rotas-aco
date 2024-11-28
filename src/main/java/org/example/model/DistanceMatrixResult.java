@@ -1,10 +1,14 @@
-package org.example.dto;
+package org.example.model;
 
 import org.example.dto.OutputLocation;
 
 public class DistanceMatrixResult {
     public OutputLocation[][] outputLocations;
     public Long[][] matrizDistancias;
+
+    //Construtor utilizado para mock
+    public DistanceMatrixResult() {
+    }
 
     public DistanceMatrixResult(OutputLocation[][] outputLocations, Long[][] matrizDistancias) {
         this.outputLocations = outputLocations;
