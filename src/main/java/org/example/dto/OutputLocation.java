@@ -1,12 +1,27 @@
 package org.example.dto;
 
 public class OutputLocation {
+
+
     private String address;
     private boolean isStarting;
     private Long distanceToNextPoint;
+    private Long durationInTrafficInSeconds;
     private Long timeInSeconds;
     private String distanceHumanReadable;
     private String timeHumanReadable;
+
+    public void setStarting(boolean starting) {
+        isStarting = starting;
+    }
+
+    public Long getDurationInTrafficInSeconds() {
+        return durationInTrafficInSeconds;
+    }
+
+    public void setDurationInTrafficInSeconds(Long durationInTrafficInSeconds) {
+        this.durationInTrafficInSeconds = durationInTrafficInSeconds;
+    }
 
     public String getAddress() {
         return address;
@@ -55,8 +70,6 @@ public class OutputLocation {
     public void setTimeHumanReadable(String timeHumanReadable) {
         this.timeHumanReadable = timeHumanReadable;
     }
-
-    // Método toString
 
     @Override
     public String toString() {
