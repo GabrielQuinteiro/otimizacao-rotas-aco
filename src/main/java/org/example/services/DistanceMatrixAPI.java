@@ -4,7 +4,7 @@ import com.google.maps.DistanceMatrixApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
-import org.example.dto.DistanceMatrixResult;
+import org.example.model.DistanceMatrixResult;
 import org.example.dto.OutputLocation;
 
 import java.io.IOException;

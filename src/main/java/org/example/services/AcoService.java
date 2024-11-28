@@ -3,6 +3,7 @@ package org.example.services;
 import org.example.algorithm.Ant;
 import org.example.algorithm.Graph;
 import org.example.dto.*;
+import org.example.model.DistanceMatrixResult;
 import org.example.model.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,8 @@ public class AcoService {
             }
 
             // 6. Atualização dos feromônios
-            updatePheromones(graph, ants, inputData.getTaxaEvaporacao());
+            double taxaEvaporacaoDinamica = inputData.getTaxaEvaporacao() * (1 - (double) iteration / MAX_ITERATIONS);
+            updatePheromones(graph, ants, taxaEvaporacaoDinamica);
 
             // 7. Armazenamento dos dados de convergência
             Ant iterationBestAnt = findBestAnt(ants);
