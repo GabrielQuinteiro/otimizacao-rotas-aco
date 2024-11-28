@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 @Service
 public class AcoService {
 
-    private static final int NUM_ANTS = 20;
     private static final int MAX_ITERATIONS = 100;
+    private final int MAX_ITERACOES_SEM_MELHORA = 50;
 
     @Autowired
     private DistanceMatrixAPI distanceService;
@@ -47,6 +47,8 @@ public class AcoService {
         // 4. Inicialização das variáveis
         List<ConvergenceData> convergenceDataList = new ArrayList<>();
         Ant bestAnt = null;
+        int iteracoesSemMelhoria = 0;
+        double melhorComprimento = Double.MAX_VALUE;
 
         // 5. Iterações do algoritmo
         for (int iteration = 0; iteration < MAX_ITERATIONS; iteration++) {
@@ -66,6 +68,18 @@ public class AcoService {
             }
 
             convergenceDataList.add(new ConvergenceData(iteration, bestAnt.getTourLength()));
+
+            if (iterationBestAnt.getTourLength() < melhorComprimento) {
+                melhorComprimento = iterationBestAnt.getTourLength();
+                iteracoesSemMelhoria = 0;
+            } else {
+                iteracoesSemMelhoria++;
+            }
+
+            if (iteracoesSemMelhoria >= MAX_ITERACOES_SEM_MELHORA) {
+                System.out.println("Convergência atingida após " + iteration + " iterações.");
+                break;
+            }
         }
 
         System.out.println("Melhor tour encontrado: " + bestAnt.getTour());
@@ -79,10 +93,11 @@ public class AcoService {
     }
 
     private List<Ant> createAnts(Graph graph, InputData inputData) {
+        int numberOfAnts = graph.getNodes().size();
         List<Ant> ants = new ArrayList<>();
         int startNodeIndex = getStartingNodeIndex(graph.getNodes());
 
-        for (int i = 0; i < NUM_ANTS; i++) {
+        for (int i = 0; i < numberOfAnts; i++) {
             ants.add(new Ant(startNodeIndex));
         }
         return ants;
@@ -148,6 +163,7 @@ public class AcoService {
             outputLocation.setAddress(currentLocation.getEndereco());
             outputLocation.setIsStarting(currentLocation.isStarting());
             outputLocation.setDistanceToNextPoint(matrixInfo.getDistanceToNextPoint());
+            outputLocation.setDurationInTrafficInSeconds(matrixInfo.getDurationInTrafficInSeconds());
             outputLocation.setTimeInSeconds(matrixInfo.getTimeInSeconds());
             outputLocation.setDistanceHumanReadable(matrixInfo.getDistanceHumanReadable());
             outputLocation.setTimeHumanReadable(matrixInfo.getTimeHumanReadable());
