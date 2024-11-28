@@ -5,17 +5,19 @@ import java.util.*;
 class ACO {
     private final Grafo grafo;
     private final int numFormigas;
-    private final double alfa = 0.5; // influencia feromonio
-    private final double beta = 0.5; // influencia distancia
+    private double alfa; // influencia feromonio
+    private double beta; // influencia distancia
     private final double taxaEvaporacao = 0.5; // rho
     private final List<Formiga> formigas;
     private List<String> melhorSolucao;
     private Long melhorCusto = Long.MAX_VALUE;
 
-    public ACO(Grafo grafo) {
+    public ACO(Grafo grafo, double alfa, double beta) {
         this.grafo = grafo;
         this.numFormigas = grafo.getQtdVertices();
         this.formigas = new ArrayList<>();
+        this.alfa = alfa;
+        this.beta = beta;
 
         inicializarFormigas();
 

@@ -16,10 +16,16 @@ public class Main {
         Spark.post("/run-aco", (request, response) -> {
             response.type("application/json");
 
-            String[] enderecos = gson.fromJson(request.body(), String[].class);
+            // parse json
+            RequestData requestData = gson.fromJson(request.body(), RequestData.class);
+
+            String[] enderecos = requestData.enderecos;
+            double alfa = requestData.alfa;
+            double beta = requestData.beta;
 
             DistanceMatrixResult distanceMatrixResult = DistanceMatrixAPI.getDistanceMatrix(enderecos);
 
+            // recebe a matriz de distancias
             Long[][] matrizDistancias = distanceMatrixResult.matrizDistancias;
             DistanciaInfo[][] distanciaInfos = distanceMatrixResult.distanciaInfos;
 
@@ -28,7 +34,7 @@ public class Main {
             Grafo grafo = new Grafo(matrizDistancias.length);
             grafo.inicializaComMatriz(matrizDistancias, List.of(enderecos));
 
-            ACO aco = new ACO(grafo);
+            ACO aco = new ACO(grafo, alfa, beta);
             aco.rodar();
             List<String> melhorSolucao = aco.getMelhorSolucao();
 
